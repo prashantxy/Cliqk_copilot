@@ -1,31 +1,20 @@
 package main
 
 import (
-	"net/http"
-
+	"cliqk-copilot/handlers"
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
-
 	r := gin.Default()
 
-	r.GET("/ping", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
-			"message": "pong",
+	r.GET("/", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"status": "Marketing Copilot API running 🚀",
 		})
 	})
-	r.POST("/generate/ad-copy", func(c *gin.Context) {
-		var req AdRequest
-		if err := c.ShouldBindJSON(&req); err != nil {
-			c.JSON(400, gin.H{"error": err.Error()})
-			return
-		}
 
-		prompt := buildPrompt(req)
-		response := callLLM(prompt)
+	r.POST("/generate/ad-copy", handlers.GenerateAdCopy)
 
-		c.JSON(200, response)
-	})
-	r.Run()
+	r.Run(":8080")
 }
